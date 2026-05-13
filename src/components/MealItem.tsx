@@ -29,8 +29,15 @@ export default function MealItem({
         text: "Delete",
         style: "destructive",
         onPress: async () => {
-          await deleteMeal(id);
-          onDelete();
+          try {
+            await deleteMeal(id);
+            onDelete();
+          } catch {
+            Alert.alert(
+              "Delete failed",
+              "Unable to delete this meal. Please try again.",
+            );
+          }
         },
       },
     ]);

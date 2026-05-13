@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { Alert, ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { globalStyles } from "@/styles/global";
@@ -14,14 +14,17 @@ export default function HomeScreen() {
   const [meals, setMeals] = useState<Meal[]>([]);
 
   const loadMeals = async () => {
-    const data = await getMeals();
-    setMeals(data);
-    console.log("Loaded meals:", data);
+    try {
+      const data = await getMeals();
+      setMeals(data);
+    } catch {
+      Alert.alert("Error", "Couldn't load meals. Please try again.");
+    }
   };
 
   useFocusEffect(
     useCallback(() => {
-      loadMeals();
+      void loadMeals();
     }, []),
   );
 
