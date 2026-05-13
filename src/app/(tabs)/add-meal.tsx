@@ -19,31 +19,53 @@ export default function AddMealsScreen() {
   const [protein, setProtein] = useState("");
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddMeal = async () => {
+    if (isSubmitting) {
+      return;
+    }
+
     if (!name || !calories) {
       Alert.alert("Error", "Please enter a meal name and calories.");
       return;
     }
 
-    await addMeal({
-      name,
-      calories: Number(calories),
-      protein: Number(protein) || 0,
-      carbs: Number(carbs) || 0,
-      fat: Number(fat) || 0,
-    });
+    const caloriesNum = Number(calories);
+    if (!Number.isFinite(caloriesNum)) {
+      Alert.alert("Error", "Please enter a valid number for calories.");
+      return;
+    }
 
-    setName("");
-    setCalories("");
-    setProtein("");
-    setCarbs("");
-    setFat("");
+    setIsSubmitting(true);
+    try {
+      await addMeal({
+        name,
+        calories: caloriesNum,
+        protein: Number(protein) || 0,
+        carbs: Number(carbs) || 0,
+        fat: Number(fat) || 0,
+      });
 
-    Alert.alert("Success", "Meal added successfully!");
+      setName("");
+      setCalories("");
+      setProtein("");
+      setCarbs("");
+      setFat("");
 
-    // @ts-ignore-next-line
-    router.push("/");
+      Alert.alert("Success", "Meal added successfully!");
+
+      // @ts-ignore-next-line
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to add meal", error);
+      Alert.alert(
+        "Error",
+        "Failed to save meal. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -95,8 +117,14 @@ export default function AddMealsScreen() {
           />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleAddMeal}>
-          <Text style={styles.buttonText}>Add Meal</Text>
+        <TouchableOpacity
+          style={[styles.button, isSubmitting && styles.buttonDisabled]}
+          onPress={handleAddMeal}
+          disabled={isSubmitting}
+        >
+          <Text style={styles.buttonText}>
+            {isSubmitting ? "Adding..." : "Add Meal"}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -125,6 +153,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 24,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: APP_COLORS.background,
