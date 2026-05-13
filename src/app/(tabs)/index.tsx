@@ -30,8 +30,8 @@ export default function HomeScreen() {
       <ScrollView>
         <Text style={globalStyles.title}>MacroZone</Text>
         <HomeHeader />
-        <MacroGrid />
-        <RecentMeals  meals={meals} />
+        <MacroGrid meals={meals} />
+        <RecentMeals meals={meals} />
       </ScrollView>
     </SafeAreaView>
   );
