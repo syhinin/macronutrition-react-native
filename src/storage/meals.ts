@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type Meal = {
   id: string;
@@ -10,11 +10,17 @@ export type Meal = {
   createdAt: string;
 };
 
-const MEALS_KEY = 'meals';
+const MEALS_KEY = "meals";
 
 export const getMeals = async (): Promise<Meal[]> => {
   const data = await AsyncStorage.getItem(MEALS_KEY);
-  return data ? JSON.parse(data) : [];
+  if (!data) return [];
+  
+  try {
+    return JSON.parse(data) as Meal[];
+  } catch {
+    return [];
+  }
 };
 
 export const deleteMeal = async (id: string): Promise<void> => {
@@ -24,7 +30,7 @@ export const deleteMeal = async (id: string): Promise<void> => {
 };
 
 export const addMeal = async (
-  meal: Omit<Meal, 'id' | 'createdAt'>,
+  meal: Omit<Meal, "id" | "createdAt">,
 ): Promise<Meal> => {
   const meals = await getMeals();
   const newMeal: Meal = {

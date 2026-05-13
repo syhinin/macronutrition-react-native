@@ -80,8 +80,7 @@ export default function AddMealsScreen() {
 
       Alert.alert("Success", "Meal added successfully!");
 
-      // @ts-ignore-next-line
-      router.push("/");
+      router.push("/(tabs)/index");
     } catch (error) {
       console.error("Failed to add meal", error);
       Alert.alert("Error", "Failed to save meal. Please try again.");
