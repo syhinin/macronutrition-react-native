@@ -26,7 +26,8 @@ export default function AddMealsScreen() {
       return;
     }
 
-    if (!name || !calories) {
+    const trimmedName = name.trim();
+    if (!trimmedName || !calories) {
       Alert.alert("Error", "Please enter a meal name and calories.");
       return;
     }
@@ -37,14 +38,38 @@ export default function AddMealsScreen() {
       return;
     }
 
+    const parseOptionalMacro = (value: string) => {
+      if (value.trim() === "") {
+        return 0;
+      }
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : Number.NaN;
+    };
+
+    const proteinNum = parseOptionalMacro(protein);
+    const carbsNum = parseOptionalMacro(carbs);
+    const fatNum = parseOptionalMacro(fat);
+
+    if (
+      Number.isNaN(proteinNum) ||
+      Number.isNaN(carbsNum) ||
+      Number.isNaN(fatNum)
+    ) {
+      Alert.alert(
+        "Error",
+        "Please enter valid numbers for protein, carbs, and fat.",
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await addMeal({
-        name,
+        name: trimmedName,
         calories: caloriesNum,
-        protein: Number(protein) || 0,
-        carbs: Number(carbs) || 0,
-        fat: Number(fat) || 0,
+        protein: proteinNum,
+        carbs: carbsNum,
+        fat: fatNum,
       });
 
       setName("");
@@ -59,10 +84,7 @@ export default function AddMealsScreen() {
       router.push("/");
     } catch (error) {
       console.error("Failed to add meal", error);
-      Alert.alert(
-        "Error",
-        "Failed to save meal. Please try again."
-      );
+      Alert.alert("Error", "Failed to save meal. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
