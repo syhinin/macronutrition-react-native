@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -70,13 +71,15 @@ export default function AddMealsScreen() {
         protein: proteinNum,
         carbs: carbsNum,
         fat: fatNum,
-      });
+      }); 
 
       setName("");
       setCalories("");
       setProtein("");
       setCarbs("");
       setFat("");
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
       router.push("/");
     } catch (error) {
