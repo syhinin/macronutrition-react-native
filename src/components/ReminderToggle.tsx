@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { APP_COLORS } from '@/styles/global';
 import {
@@ -16,22 +16,31 @@ export default function ReminderToggle() {
 
   useEffect(() => {
     const load = async () => {
-      const val = await AsyncStorage.getItem(REMINDERS_KEY);
-      setEnabled(val === 'true');
+      try {
+       const val = await AsyncStorage.getItem(REMINDERS_KEY);
+        setEnabled(val === 'true');
+      } catch {
+        setEnabled(false);
+      }
     };
     load();
   }, []);
 
   const toggle = async (value: boolean) => {
-    if (value) {
-      const granted = await requestPermissions();
-      if (!granted) return;
-      await scheduleMealReminders();
-    } else {
-      await cancelMealReminders();
+    try {
+      if (value) {
+        const granted = await requestPermissions();
+        
+        if (!granted) return;
+        await scheduleMealReminders();
+      } else {
+        await cancelMealReminders();
+      }
+      setEnabled(value);
+     await AsyncStorage.setItem(REMINDERS_KEY, value.toString());
+    } catch {
+      Alert.alert('Error', 'Could not update reminders. Please try again.');
     }
-    setEnabled(value);
-    await AsyncStorage.setItem(REMINDERS_KEY, value.toString());
   };
 
   return (

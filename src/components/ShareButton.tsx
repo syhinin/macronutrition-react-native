@@ -1,9 +1,8 @@
-import { APP_COLORS } from '@/styles/global';
 import { Ionicons } from '@expo/vector-icons';
-import { Share, TouchableOpacity } from 'react-native';
+import { Alert, Share, TouchableOpacity } from 'react-native';
 
 import { Meal } from '@/storage/meals';
-
+import { APP_COLORS } from '@/styles/global';
 
 type ShareButtonProps = {
   meals: Meal[];
@@ -21,9 +20,13 @@ export default function ShareButton({ meals }: ShareButtonProps) {
       { calories: 0, protein: 0, carbs: 0, fat: 0 },
     );
 
-    await Share.share({
-      message: `MacroNutrition Daily Summary\n\nCalories: ${totals.calories}\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`,
-    });
+    try {
+      await Share.share({
+        message: `MacroNutrition Daily Summary\n\nCalories: ${totals.calories}\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`,
+      });
+    } catch {
+      Alert.alert('Error', 'Could not open share sheet. Please try again.');
+    }
   };
 
   return (
