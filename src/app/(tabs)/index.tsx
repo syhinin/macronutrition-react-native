@@ -1,14 +1,16 @@
+import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Alert, ScrollView, Text } from "react-native";
+import { Alert, ScrollView, Text, View, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { getMeals, Meal } from "@/storage";
 import { globalStyles } from "@/styles/global";
 
 import HomeHeader from "@/components/HomeHeader";
 import MacroGrid from "@/components/MacroGrid";
 import RecentMeals from "@/components/RecentMeals";
-import { getMeals, Meal } from "@/storage";
-import { useFocusEffect } from "expo-router";
+import ShareButton from '@/components/ShareButton';
+
 
 export default function HomeScreen() {
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -31,7 +33,10 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={globalStyles.container}>
       <ScrollView>
-        <Text style={globalStyles.title}>MacroZone</Text>
+        <View style={globalStyles.header}>
+          <Text style={globalStyles.title}>MacroZone</Text>
+          <ShareButton meals={meals} />
+        </View>
         <HomeHeader />
         <MacroGrid meals={meals} />
         <RecentMeals meals={meals} onDelete={loadMeals} />
