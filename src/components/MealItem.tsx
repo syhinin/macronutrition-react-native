@@ -32,7 +32,7 @@ export default function MealItem({
         onPress: async () => {
           try {
             await deleteMeal(id);
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
             onDelete();
           } catch {
             Alert.alert(

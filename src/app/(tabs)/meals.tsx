@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import MealItem from '@/components/MealItem';
@@ -17,8 +17,12 @@ export default function AllMealsScreen() {
   };
 
   const handleClearAll = async () => {
-    await clearAllMeals();
-    loadMeals();
+     try {
+      await clearAllMeals();
+      await loadMeals();
+    } catch {
+     Alert.alert("Error", "Failed to clear meals. Please try again.");
+    }
   };
 
   useFocusEffect(
@@ -33,7 +37,14 @@ export default function AllMealsScreen() {
     <ScrollView >
       <View style={globalStyles.header}>
         <Text style={globalStyles.title}>All Meals</Text>
-        <TouchableOpacity onPress={handleClearAll}>
+        <TouchableOpacity
+          onPress={() =>
+            Alert.alert("Clear all meals?", "This cannot be undone.", [
+              { text: "Cancel", style: "cancel" },
+              { text: "Clear All", style: "destructive", onPress: handleClearAll },
+            ])
+         }
+       >
           <Text style={styles.clearButton}>Clear All</Text>
         </TouchableOpacity>
       </View>

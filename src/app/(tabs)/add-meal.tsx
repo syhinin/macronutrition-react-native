@@ -79,11 +79,10 @@ export default function AddMealsScreen() {
       setCarbs("");
       setFat("");
 
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
       router.push("/");
     } catch (error) {
-      console.error("Failed to add meal", error);
       Alert.alert("Error", "Failed to save meal. Please try again.");
     } finally {
       setIsSubmitting(false);
