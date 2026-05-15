@@ -78,9 +78,7 @@ export default function AddMealsScreen() {
       setCarbs("");
       setFat("");
 
-      Alert.alert("Success", "Meal added successfully!");
-
-      router.push("/(tabs)/index");
+      router.push("/");
     } catch (error) {
       console.error("Failed to add meal", error);
       Alert.alert("Error", "Failed to save meal. Please try again.");
