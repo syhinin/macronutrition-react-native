@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -70,7 +71,7 @@ export default function AddMealsScreen() {
         protein: proteinNum,
         carbs: carbsNum,
         fat: fatNum,
-      });
+      }); 
 
       setName("");
       setCalories("");
@@ -78,11 +79,10 @@ export default function AddMealsScreen() {
       setCarbs("");
       setFat("");
 
-      Alert.alert("Success", "Meal added successfully!");
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-      router.push("/(tabs)/index");
+      router.push("/");
     } catch (error) {
-      console.error("Failed to add meal", error);
       Alert.alert("Error", "Failed to save meal. Please try again.");
     } finally {
       setIsSubmitting(false);
